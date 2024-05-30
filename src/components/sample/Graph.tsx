@@ -6,7 +6,7 @@ import { Button } from "@fluentui/react-components";
 import { Design } from "./Design";
 import { PersonCardFluentUI } from "./PersonCardFluentUI";
 import { PersonCardGraphToolkit } from "./PersonCardGraphToolkit";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { TeamsFxContext } from "../Context";
 
 export function Graph() {
@@ -19,8 +19,11 @@ export function Graph() {
       }
       const teamFXToken = await teamsUserCredential.getToken([]);
       console.log("useGraphWithCredential teamFXToken", teamFXToken?.token);
-      console.log("try get profile");
 
+      // Not working
+      // await teamsUserCredential.login(scope);
+
+      console.log("before get profile");
       // Call graph api directly to get user profile information
       const profile = await graph.api("/me").get();
       console.log("after get profile");
@@ -41,7 +44,7 @@ export function Graph() {
       return { profile, photoUrl };
     },
     {
-      scope: ["User.Read"],
+      scope: ["User.Read","profile"],
       credential: teamsUserCredential,
     }
   );
