@@ -16,6 +16,7 @@ import { Deploy } from "./Deploy";
 import { Publish } from "./Publish";
 import { TeamsFxContext } from "../Context";
 import { app } from "@microsoft/teams-js";
+import { Graph } from "./Graph";
 
 export function Welcome(props: { showFunction?: boolean; environment?: string }) {
   const { showFunction, environment } = {
@@ -37,13 +38,18 @@ export function Welcome(props: { showFunction?: boolean; environment?: string })
   const { teamsUserCredential } = useContext(TeamsFxContext);
   const { loading, data, error } = useData(async () => {
     if (teamsUserCredential) {
+      const teamFXToken = await teamsUserCredential.getToken([]);
+      // console.log("Welcome teamFXToken", teamFXToken?.token);
       const userInfo = await teamsUserCredential.getUserInfo();
+      // console.log("Welcome userInfo", userInfo);
       return userInfo;
     }
   });
+  
   const userName = loading || error ? "" : data!.displayName;
   const hubName = useData(async () => {
     await app.initialize();
+    app.notifySuccess();
     const context = await app.getContext();
     return context.app.host.name;
   })?.data;
@@ -51,9 +57,13 @@ export function Welcome(props: { showFunction?: boolean; environment?: string })
     <div className="welcome page">
       <div className="narrow page-padding">
         <Image src="hello.png" />
-        <h1 className="center">Congratulations{userName ? ", " + userName : ""}!</h1>
+        <h1 className="center">
+          Congratulations{userName ? ", " + userName : ""}!
+        </h1>
         {hubName && <p className="center">Your app is running in {hubName}</p>}
-        <p className="center">Your app is running in your {friendlyEnvironmentName}</p>
+        <p className="center">
+          Your app is running in your {friendlyEnvironmentName}
+        </p>
 
         <div className="tabList">
           <TabList selectedValue={selectedValue} onTabSelect={onTabSelect}>
@@ -72,6 +82,7 @@ export function Welcome(props: { showFunction?: boolean; environment?: string })
               <div>
                 <EditCode showFunction={showFunction} />
                 <CurrentUser userName={userName} />
+                <Graph />
                 {showFunction && <AzureFunctions />}
               </div>
             )}

@@ -1,0 +1,33 @@
+import { ProfileCard } from "./ProfileCard";
+
+export function PersonCardFluentUI(props: {
+  loading?: boolean;
+  error?: any;
+  data?:
+    | {
+        profile: any;
+        photoUrl: string;
+      }
+    | undefined;
+}) {
+  return (
+    <div className="section-margin">
+      <p>
+        This example uses Fluent UI component with user's profile photo, name
+        and email address fetched from Graph API calls.
+      </p>
+      <p>props data isloading: {props.loading}</p>
+      <p>props data error: {props.error}</p>
+      <pre>{`const graph = createMicrosoftGraphClientWithCredential(credential, scope); \nconst profile = await graph.api("/me").get(); \nconst photo = await graph.api("/me/photo/$value").get();`}</pre>
+
+      {props.loading && ProfileCard(true)}
+      {!props.loading && props.error && (
+        <div className="error">
+          Failed to read your profile. Please try again later. <br /> Details:{" "}
+          {props.error.toString()}
+        </div>
+      )}
+      {!props.loading && props.data && ProfileCard(false, props.data)}
+    </div>
+  );
+}
