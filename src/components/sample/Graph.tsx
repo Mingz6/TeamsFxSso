@@ -17,11 +17,6 @@ export function Graph() {
       if (!teamsUserCredential) {
         console.log("No teamsUserCredential");
       }
-      const teamFXToken = await teamsUserCredential.getToken([]);
-      console.log("useGraphWithCredential teamFXToken", teamFXToken?.token);
-
-      // Not working
-      // await teamsUserCredential.login(scope);
 
       console.log("before get profile");
       // Call graph api directly to get user profile information
