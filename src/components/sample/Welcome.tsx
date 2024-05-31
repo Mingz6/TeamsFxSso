@@ -36,9 +36,17 @@ export function Welcome(props: { showFunction?: boolean; environment?: string })
     setSelectedValue(data.value);
   };
   const { teamsUserCredential } = useContext(TeamsFxContext);
+  
+  const hubName = useData(async () => {
+    await app.initialize();
+    // app.notifySuccess();
+    const context = await app.getContext();
+    return context.app.host.name;
+  })?.data;
+
   const { loading, data, error } = useData(async () => {
     if (teamsUserCredential) {
-      const teamFXToken = await teamsUserCredential.getToken([]);
+      // const teamFXToken = await teamsUserCredential.getToken([]);
       // console.log("Welcome teamFXToken", teamFXToken?.token);
       const userInfo = await teamsUserCredential.getUserInfo();
       // console.log("Welcome userInfo", userInfo);
@@ -47,12 +55,6 @@ export function Welcome(props: { showFunction?: boolean; environment?: string })
   });
   
   const userName = loading || error ? "" : data!.displayName;
-  const hubName = useData(async () => {
-    await app.initialize();
-    app.notifySuccess();
-    const context = await app.getContext();
-    return context.app.host.name;
-  })?.data;
   return (
     <div className="welcome page">
       <div className="narrow page-padding">
